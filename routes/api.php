@@ -3,6 +3,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PatientController;
 
@@ -17,6 +18,8 @@ Route::get('/', function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::apiResource('users', UserController::class);
+
+    Route::apiResource('consultations', ConsultationController::class);
 
     // Routes pour les patients
     Route::apiResource('patients', PatientController::class);
