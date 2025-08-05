@@ -12,7 +12,7 @@ class AuthController extends Controller
 {
     public function login(Request $request)
     {
-        Log::info('Requête reçue pour tentative de connexion', ['ip' => $request->ip()]);
+        //Log::info('Requête reçue pour tentative de connexion', ['ip' => $request->ip()]);
 
         try {
             // Validation
@@ -27,15 +27,13 @@ class AuthController extends Controller
                 return response()->json(['message' => 'Identifiants invalides'], 401);
             }
 
-            // Créer un token Sanctum
-            $user = Auth::user();
-            $token = $user->createToken('auth-token')->plainTextToken;
+            // Régénération de session pour la sécurité
+            $request->session()->regenerate();
 
-            Log::info('Connexion réussie', ['email' => $validated['email']]);
+            //Log::info('Connexion réussie', ['email' => $validated['email']]);
             return response()->json([
                 'message' => 'Connecté avec succès',
-                'token' => $token,
-                'user' => $user
+                'user' => Auth::user()
             ]);
         } catch (ValidationException $e) {
             // Erreurs de validation
@@ -61,14 +59,14 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
-        Log::info('Récupération des informations de l\'utilisateur', ['user_id' => $request->user()->id]);
         return response()->json($request->user());
     }
 
     public function logout(Request $request)
     {
-        // Révoquer le token actuel
-        $request->user()->currentAccessToken()->delete();
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
         
         return response()->json(['message' => 'Déconnecté']);
     }
