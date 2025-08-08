@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\ValidationException;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class PatientController extends Controller
 {
@@ -258,18 +257,6 @@ class PatientController extends Controller
             ], 500);
         }
     }
-
-
-    public function exportPatientPdf($id)
-    {
-        Log::info('Requête reçue pour exporter le patient en PDF', ['id' => $id]);
-        $patient = Patient::findOrFail($id);
-
-        $pdf = Pdf::loadView('pdf.patient', ['patient' => $patient]);
-
-        return $pdf->download('patient_' . $patient->id . '.pdf');
-    }
-
 
     /**
      * Search patients by name or email

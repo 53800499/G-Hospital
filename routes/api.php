@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PatientController;
+use App\Http\Controllers\RendezVousController;
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
@@ -18,12 +19,11 @@ Route::get('/', function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::apiResource('users', UserController::class);
-
+    Route::apiResource('rendezvous', RendezVousController::class);
     Route::apiResource('consultations', ConsultationController::class);
 
     // Routes pour les patients
     Route::apiResource('patients', PatientController::class);
-    Route::get('/patients/{id}/export-pdf', [PatientController::class, 'exportPatientPdf']);
     Route::get('/patients/search', [PatientController::class, 'search'])->name('patients.search');
     Route::get('/patients/gender', [PatientController::class, 'getByGender'])->name('patients.by-gender');
 });
